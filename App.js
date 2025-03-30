@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { PLDataProvider } from './utils/PLDataContext';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AuthenticationStack from './navigation/AuthenticationStack';
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    return (
+        <PLDataProvider>
+            <NavigationContainer>
+                <Tab.Navigator
+                    screenOptions={{
+                        headerShown: false
+                    }}>
+                    <Tab.Screen
+                        name='Authentication'
+                        component={AuthenticationStack}
+                    />
+                </Tab.Navigator>
+            </NavigationContainer>
+        </PLDataProvider>
+    );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
