@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { View, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import { PLDataContext } from '../utils/PLDataContext';
-import globalStyles from "../components/globalStyles";
-import { colors } from "../components/globalStyles";
+import globalStyles from "../styles/globalStyles";
+import { colors } from "../styles/globalStyles";
 import { StyleSheet } from 'react-native';
 
 
