@@ -2,6 +2,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FIREBASE_AUTH } from '../config/FirebaseConfig';
+import globalStyles from "../components/globalStyles";
+import { colors } from "../components/globalStyles";
 
 export default SignInScreen = () => {
 
@@ -15,7 +17,7 @@ export default SignInScreen = () => {
     if(userObject.email === "" || userObject.password === "") {
         setUserObject({
             ...userObject,
-            error: 'Email and Password is mandatory!'
+            error: 'Email and Password are mandatory!'
         });
         return;
     }
@@ -34,10 +36,12 @@ export default SignInScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[globalStyles.container, styles.container]}>
+        <Text style={styles.heading}>Sign In</Text>
+
         <TextInput
             style={styles.inputText}
-            placeholder='Enter Username'
+            placeholder='Enter Email'
             keyboardType='email-address'
             autoCapitalize='none'
             autoCorrect={false}
@@ -55,17 +59,12 @@ export default SignInScreen = () => {
             onChangeText={(text) => setUserObject({...userObject, password: text})}
         />
 
-        {
-            !!userObject.error &&
-            <View style={{ marginBottom: 10 }}>
-                <Text style={{ color: 'red', fontSize: 18 }}>{userObject.error}</Text>
-            </View>
-        }
+        {userObject.error ? (
+            <Text style={styles.errorText}>{userObject.error}</Text>
+        ) : null}
 
-        <TouchableOpacity
-            style={styles.buttonStyle}
-            onPress={SignIn} >
-            <Text style={styles.buttonText}>Sign In</Text>
+        <TouchableOpacity style={globalStyles.button} onPress={SignIn}>
+            <Text style={globalStyles.buttonText}>Sign In</Text>
         </TouchableOpacity>
     </View>
   );
@@ -73,31 +72,31 @@ export default SignInScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  inputText: {
-    width: '80%',
-    height: 50,
-    borderColor: 'chocolate',
-    borderRadius: 10,
-    borderWidth: 1,
-    fontSize: 18,
-    marginBottom: 20
-  },
-  buttonStyle: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '80%',
-    borderRadius: 10,
-    height: 40,
-    backgroundColor: 'chocolate',
+    paddingHorizontal: 20,
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 22,
-    fontWeight: '700'
-  }
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.primary,
+    marginBottom: 20,
+  },
+  inputText: {
+    width: '100%',
+    height: 50,
+    borderColor: colors.border,
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    marginBottom: 15,
+  },
+  errorText: {
+    color: colors.accent,
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
 });
