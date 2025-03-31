@@ -1,23 +1,16 @@
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { PLDataProvider } from './utils/PLDataContext';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AuthenticationStack from './navigation/AuthenticationStack';
-
-const Tab = createBottomTabNavigator();
+import AppNavigator from './navigation/AppNavigator';
+import { UserAuthentication } from './config/UserAuthentication';
 
 export default function App() {
+    const { user } = UserAuthentication(); // Use only `user`
+
     return (
         <PLDataProvider>
             <NavigationContainer>
-                <Tab.Navigator
-                    screenOptions={{
-                        headerShown: false
-                    }}>
-                    <Tab.Screen
-                        name='Authentication'
-                        component={AuthenticationStack}
-                    />
-                </Tab.Navigator>
+                <AppNavigator user={user} />
             </NavigationContainer>
         </PLDataProvider>
     );
