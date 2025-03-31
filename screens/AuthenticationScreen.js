@@ -36,15 +36,18 @@ const AuthenticationScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     screenPadding: {
-        paddingHorizontal: 20, // Added horizontal padding for better spacing
+        flex: 1,  // Takes full screen height
+        justifyContent: 'center', // Centers content vertically
+        alignItems: 'center', // Centers content horizontally
+        paddingHorizontal: 20,
     },
     header: {
         backgroundColor: colors.primary,
         paddingVertical: 20,
         paddingHorizontal: 16,
-        borderBottomLeftRadius: 16,
-        borderBottomRightRadius: 16,
-        marginBottom: 30,
+        borderRadius: 16,
+        marginBottom: 100,
+        width: '100%',  // Ensure full width
     },
     title: {
         fontSize: 24,
@@ -66,6 +69,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderRadius: 8,
         marginBottom: 20,
+        width: '90%',  // Adjust button width for better UI
     },
     buttonText: {
         color: colors.white,

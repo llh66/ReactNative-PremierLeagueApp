@@ -25,7 +25,7 @@ export default function AuthenticationStack() {
     <Stack.Screen
         name="EntryScreen"
         component={AuthenticationScreen}
-        options={{ title: 'Welcome' }} // Ensure title is a string
+        options={{ title: 'Welcome Page' }} 
     />
     <Stack.Screen
         name="SignInScreen"
