@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import UpcomingMatchesScreen from '../screens/UpcomingMatchesScreen';
 import WatchlistScreen from '../screens/WatchlistScreen';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
-import { colors } from "../components/globalStyles"; // Assuming your colors are imported from here
+import { colors } from "../styles/globalStyles";
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../config/FirebaseConfig'; // Import your Firebase config
 import { TouchableOpacity } from 'react-native';
