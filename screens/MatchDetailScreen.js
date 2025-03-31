@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import globalStyles from "../components/globalStyles";
-import { colors } from "../components/globalStyles";
+import globalStyles from "../styles/globalStyles";
+import { colors } from "../styles/globalStyles";
 import { StyleSheet } from "react-native";
 
 export default function MatchDetailScreen({ route, navigation }) {
