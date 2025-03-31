@@ -2,101 +2,147 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FIREBASE_AUTH } from '../config/FirebaseConfig';
-import globalStyles from "../components/globalStyles";
-import { colors } from "../components/globalStyles";
+import globalStyles from "../styles/globalStyles";
+import { colors } from "../styles/globalStyles";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default SignInScreen = () => {
-
     const [userObject, setUserObject] = useState({
         email: '',
         password: '',
         error: ''
     });
 
-  async function SignIn() {
-    if(userObject.email === "" || userObject.password === "") {
-        setUserObject({
-            ...userObject,
-            error: 'Email and Password are mandatory!'
-        });
-        return;
+    async function SignIn() {
+        if (userObject.email === "" || userObject.password === "") {
+            setUserObject({
+                ...userObject,
+                error: 'Email and Password are mandatory!'
+            });
+            return;
+        }
+
+        try {
+            await signInWithEmailAndPassword(FIREBASE_AUTH, userObject.email, userObject.password)
+                .then((result) => {
+                    console.log(result.user.email);
+                });
+        } catch (err) {
+            setUserObject({
+                ...userObject,
+                error: "Something went wrong"
+            });
+        }
     }
 
-    try {
-        await signInWithEmailAndPassword(FIREBASE_AUTH ,userObject.email, userObject.password)
-        .then((result) => {
-            console.log(result.user.email);
-        })
-    } catch(err) {
-        setUserObject({
-            ...userObject,
-            error: "Something went wrong"
-        });
-    }
-  }
+    return (
+        <View style={[globalStyles.container, styles.container]}>
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.heading}>Welcome Back!</Text>
+                <Text style={styles.subtitle}>Sign in to continue</Text>
+            </View>
 
-  return (
-    <View style={[globalStyles.container, styles.container]}>
-        <Text style={styles.heading}>Sign In</Text>
+            {/* Input Fields */}
+            <View style={styles.inputContainer}>
+                <Icon name="envelope" size={18} color={colors.primary} style={styles.inputIcon} />
+                <TextInput
+                    style={styles.inputText}
+                    placeholder='Enter Email'
+                    keyboardType='email-address'
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    value={userObject.email}
+                    onChangeText={(text) => setUserObject({ ...userObject, email: text })}
+                />
+            </View>
 
-        <TextInput
-            style={styles.inputText}
-            placeholder='Enter Email'
-            keyboardType='email-address'
-            autoCapitalize='none'
-            autoCorrect={false}
-            value={userObject.email}
-            onChangeText={(text) => setUserObject({...userObject, email: text})}
-        />
+            <View style={styles.inputContainer}>
+                <Icon name="lock" size={20} color={colors.primary} style={styles.inputIcon} />
+                <TextInput
+                    style={styles.inputText}
+                    placeholder='Enter Password'
+                    secureTextEntry={true}
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    value={userObject.password}
+                    onChangeText={(text) => setUserObject({ ...userObject, password: text })}
+                />
+            </View>
 
-        <TextInput
-            style={styles.inputText}
-            placeholder='Enter Password'
-            secureTextEntry={true}
-            autoCapitalize='none'
-            autoCorrect={false}
-            value={userObject.password}
-            onChangeText={(text) => setUserObject({...userObject, password: text})}
-        />
+            {userObject.error ? (
+                <Text style={styles.errorText}>{userObject.error}</Text>
+            ) : null}
 
-        {userObject.error ? (
-            <Text style={styles.errorText}>{userObject.error}</Text>
-        ) : null}
-
-        <TouchableOpacity style={globalStyles.button} onPress={SignIn}>
-            <Text style={globalStyles.buttonText}>Sign In</Text>
-        </TouchableOpacity>
-    </View>
-  );
+            {/* Sign In Button */}
+            <TouchableOpacity style={styles.button} onPress={SignIn}>
+                <Icon name="sign-in" size={18} color={colors.white} />
+                <Text style={styles.buttonText}> Sign In</Text>
+            </TouchableOpacity>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: 20,
-  },
-  inputText: {
-    width: '100%',
-    height: 50,
-    borderColor: colors.border,
-    backgroundColor: colors.white,
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  errorText: {
-    color: colors.accent,
-    fontSize: 16,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    header: {
+        marginBottom: 40,
+        alignItems: 'center',
+    },
+    heading: {
+        fontSize: 26,
+        fontWeight: 'bold',
+        color: colors.primary,
+        marginBottom: 8,
+    },
+    subtitle: {
+        fontSize: 16,
+        color: colors.textSecondary,
+        textAlign: 'center',
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        backgroundColor: colors.white,
+        borderColor: colors.border,
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 15,
+        marginBottom: 15,
+    },
+    inputIcon: {
+        marginRight: 10,
+    },
+    inputText: {
+        flex: 1,
+        height: 50,
+        fontSize: 16,
+    },
+    errorText: {
+        color: colors.accent,
+        fontSize: 16,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.primary,
+        paddingVertical: 14,
+        borderRadius: 10,
+        width: '90%',
+        alignSelf: 'center',
+    },
+    buttonText: {
+        color: colors.white,
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 8,
+    },
 });
