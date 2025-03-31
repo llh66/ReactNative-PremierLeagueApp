@@ -2,8 +2,8 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FIREBASE_AUTH } from '../config/FirebaseConfig';
-import globalStyles from "../components/globalStyles";
-import { colors } from "../components/globalStyles";
+import globalStyles from "../styles/globalStyles";
+import { colors } from "../styles/globalStyles";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default SignUpScreen = () => {
