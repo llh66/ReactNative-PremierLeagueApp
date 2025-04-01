@@ -24,7 +24,6 @@ export default function UpcomingMatchesScreen({ navigation }) {
     };
 
     const renderItem = ({ item }) => {
-        const competition = item.competitions[0]?.name || "Premier League";
         const homeTeam = item.competitions[0]?.competitors[0]?.team;
         const awayTeam = item.competitions[0]?.competitors[1]?.team;
         const matchDate = formatMatchDate(item.date);
@@ -71,7 +70,6 @@ export default function UpcomingMatchesScreen({ navigation }) {
         </View>
     );
 }
-
 const styles = StyleSheet.create({
     listContainer: {
         paddingVertical: 12,
@@ -81,12 +79,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginHorizontal: 16,
         marginBottom: 16,
-        overflow: 'hidden',
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
     },
     dateStrip: {
         backgroundColor: colors.primary,
@@ -124,7 +116,7 @@ const styles = StyleSheet.create({
         width: '30%',
     },
     vsText: {
-        fontSize: 18,
+        fontSize: 16,  
         fontWeight: 'bold',
         color: colors.accent,
         marginBottom: 8,

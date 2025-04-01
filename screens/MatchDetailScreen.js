@@ -1,19 +1,38 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { 
+  View, 
+  Text, 
+  Image, 
+  TouchableOpacity, 
+  StyleSheet 
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import MapView, { Marker } from "react-native-maps";
 import globalStyles from "../styles/globalStyles";
 import { colors } from "../styles/globalStyles";
-import { StyleSheet } from "react-native";
 
 export default function MatchDetailScreen({ route, navigation }) {
     const { match } = route.params;
 
-    // Extract home and away teams
-    const homeTeam = match.competitions[0]?.competitors[0];
-    const awayTeam = match.competitions[0]?.competitors[1];
+    const homeCompetitor = match.competitions[0]?.competitors[0] || {};
+    const awayCompetitor = match.competitions[0]?.competitors[1] || {};
+    
+    const homeTeam = homeCompetitor.team || {};
+    const awayTeam = awayCompetitor.team || {};
+    
+    const homeForm = homeCompetitor.form || '----';
+    const awayForm = awayCompetitor.form || '----';
+    
+    const homeRecord = homeCompetitor.records?.[0]?.summary || 'N/A';
+    const awayRecord = awayCompetitor.records?.[0]?.summary || 'N/A';
 
-    // Extract venue and date
-    const venue = match.competitions[0]?.venue?.fullName;
+    const venue = match.competitions[0]?.venue || {};
+    
+    const stadiumCoords = {
+        latitude: venue?.coordinates?.latitude || 52.939899,
+        longitude: venue?.coordinates?.longitude || -1.13258
+    };
+
     const matchDate = new Date(match.date);
     const formattedDate = matchDate.toLocaleDateString("en-US", {
         weekday: "long",
@@ -26,191 +45,230 @@ export default function MatchDetailScreen({ route, navigation }) {
         minute: "2-digit",
     });
 
-    // Extract top goal scorers for both teams
-    const homeTopScorer = homeTeam?.leaders?.[0]?.leaders?.[0]?.athlete || null;
-    const homeTopScorerGoals =
-        homeTeam?.leaders?.[0]?.leaders?.[0]?.displayValue || "N/A";
-
-    const awayTopScorer = awayTeam?.leaders?.[0]?.leaders?.[0]?.athlete || null;
-    const awayTopScorerGoals =
-        awayTeam?.leaders?.[0]?.leaders?.[0]?.displayValue || "N/A";
-
     return (
         <View style={[globalStyles.container, styles.contentPadding]}>
-            {/* Back Button */}
             <TouchableOpacity
                 style={styles.backButton}
-                onPress={() => navigation.navigate("MainTabs")}
+                onPress={() => navigation.goBack()}
             >
                 <Icon name="arrow-left" size={20} color={colors.primary} />
                 <Text style={styles.backButtonText}>Back to Matches</Text>
             </TouchableOpacity>
 
-            {/* Match Header */}
             <View style={styles.header}>
                 <Text style={styles.title}>
-                    {homeTeam?.team?.displayName} vs {awayTeam?.team?.displayName}
+                    {homeTeam.displayName} vs {awayTeam.displayName}
                 </Text>
                 <Text style={styles.date}>
                     {formattedDate} | {formattedTime}
                 </Text>
             </View>
 
-            {/* Team Logos and Top Scorers */}
             <View style={styles.teamsContainer}>
-                {/* Home Team */}
                 <View style={styles.teamContainer}>
-                    <Image
-                        source={{ uri: homeTeam?.team?.logo }}
-                        style={styles.logo}
-                    />
-                    <Text style={styles.teamName}>{homeTeam?.team?.displayName}</Text>
-                    <Text style={styles.scorerName}>
-                        Top Scorer: {homeTopScorer?.displayName || "N/A"}
-                    </Text>
-                    <Text style={styles.scorerGoals}>{homeTopScorerGoals} goals</Text>
+                    <Image source={{ uri: homeTeam.logo }} style={styles.logo} />
+                    <Text style={styles.teamName}>{homeTeam.displayName}</Text>
+                    
+                    <View style={styles.formContainer}>
+                        {homeForm.split('').map((result, index) => (
+                            <Text key={index} style={[
+                                styles.formText,
+                                { color: 
+                                    result === 'W' ? '#4CAF50' :
+                                    result === 'L' ? '#F44336' : '#9E9E9E'
+                                }
+                            ]}>
+                                {result}
+                            </Text>
+                        ))}
+                    </View>
+                    
+                    <Text style={styles.recordText}>{homeRecord}</Text>
                 </View>
 
-                {/* VS Text */}
                 <Text style={styles.vsText}>VS</Text>
 
-                {/* Away Team */}
                 <View style={styles.teamContainer}>
-                    <Image
-                        source={{ uri: awayTeam?.team?.logo }}
-                        style={styles.logo}
-                    />
-                    <Text style={styles.teamName}>{awayTeam?.team?.displayName}</Text>
-                    <Text style={styles.scorerName}>
-                        Top Scorer: {awayTopScorer?.displayName || "N/A"}
-                    </Text>
-                    <Text style={styles.scorerGoals}>{awayTopScorerGoals} goals</Text>
+                    <Image source={{ uri: awayTeam.logo }} style={styles.logo} />
+                    <Text style={styles.teamName}>{awayTeam.displayName}</Text>
+                    
+                    <View style={styles.formContainer}>
+                        {awayForm.split('').map((result, index) => (
+                            <Text key={index} style={[
+                                styles.formText,
+                                { color: 
+                                    result === 'W' ? '#4CAF50' :
+                                    result === 'L' ? '#F44336' : '#9E9E9E'
+                                }
+                            ]}>
+                                {result}
+                            </Text>
+                        ))}
+                    </View>
+                    
+                    <Text style={styles.recordText}>{awayRecord}</Text>
                 </View>
             </View>
 
-            {/* Match Details */}
             <View style={styles.detailsContainer}>
-                <Text style={styles.detail}>Venue: {venue || "N/A"}</Text>
+                <Text style={styles.detail}>Venue: {venue.fullName || "N/A"}</Text>
+                <Text style={styles.detail}>City: {venue.address?.city || "N/A"}</Text>
             </View>
 
-            {/* Add to Watchlist Button */}
+            <View style={styles.mapContainer}>
+                <Text style={styles.sectionHeader}>Stadium Location</Text>
+                <MapView
+                    style={styles.map}
+                    initialRegion={{
+                        ...stadiumCoords,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421
+                    }}
+                >
+                    <Marker
+                        coordinate={stadiumCoords}
+                        title={venue.fullName}
+                        description={venue.address?.city}
+                    />
+                </MapView>
+            </View>
+
             <TouchableOpacity style={styles.watchlistButton}>
                 <Icon name="plus" size={16} color="#FFFFFF" />
-                <Text style={styles.watchlistButtonText}> Add to Watchlist</Text>
+                <Text style={styles.watchlistButtonText}>Add to Watchlist</Text>
             </TouchableOpacity>
         </View>
     );
 }
-
 const styles = StyleSheet.create({
     contentPadding: {
-        marginTop: 40,
+        paddingTop: 20,
+        paddingBottom: 20,
     },
     backButton: {
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 20,
-        marginBottom: 20,
+        marginBottom: 15,
         paddingHorizontal: 16,
     },
     backButtonText: {
-        fontSize: 18,
+        fontSize: 20,  // Increased font size
         fontWeight: "bold",
         color: colors.primary,
         marginLeft: 8,
     },
     header: {
         backgroundColor: colors.primary,
-        paddingVertical: 20,
+        paddingVertical: 15,
         paddingHorizontal: 16,
-        borderBottomLeftRadius: 16,
-        borderBottomRightRadius: 16,
-        marginBottom: 30,
-        elevation: 3,
+        borderRadius: 12,
+        marginBottom: 20,
     },
     title: {
-        fontSize: 24,
+        fontSize: 26,  // Increased font size
         fontWeight: "bold",
         color: colors.white,
         textAlign: "center",
     },
     date: {
-        fontSize: 14,
+        fontSize: 16,  // Increased font size
         color: colors.white,
         textAlign: "center",
-        marginTop: 8,
+        marginTop: 6,
     },
     teamsContainer: {
         flexDirection: "row",
-        justifyContent: "space-around",
+        justifyContent: "center",  // Center teams horizontally
         alignItems: "center",
-        marginBottom: 40,
+        marginBottom: 20,
     },
     teamContainer: {
         alignItems: "center",
-        width: "40%",
+        width: "40%",  // Reduced width to make space for the VS text
     },
     logo: {
-        width: 80,
-        height: 80,
-        marginBottom: 10,
+        width: 60,
+        height: 60,
+        marginBottom: 8,
     },
     teamName: {
-        fontSize: 16,
+        fontSize: 18,  // Increased font size
         fontWeight: "bold",
         textAlign: "center",
         color: colors.text,
     },
-    scorerName: {
-        fontSize: 14,
-        fontWeight: "bold",
-        textAlign: "center",
-        marginTop: 5,
-        color: colors.textSecondary,
-    },
-    scorerGoals: {
-        fontSize: 14,
-        textAlign: "center",
-        marginTop: 2,
-        color: colors.textSecondary,
-    },
     vsText: {
-        fontSize: 18,
+        fontSize: 20,  // Increased font size
         fontWeight: "bold",
         color: colors.accent,
+        width: 50,  // Set width to create space between the teams
+        textAlign: "center",
     },
     detailsContainer: {
         backgroundColor: colors.white,
         borderRadius: 8,
+        paddingVertical: 8,
         paddingHorizontal: 16,
-        paddingVertical: 12,
-        elevation: 3,
-        marginBottom: 20,
+        marginBottom: 15,
+        width: '80%',
         alignSelf: "center",
-        width: "80%",
     },
     detail: {
-        fontSize: 16,
-        color: "black",
-        fontWeight: "500",
+        fontSize: 16,  // Increased font size
+        color: colors.text,
+        marginBottom: 4,
         textAlign: "center",
+    },
+    mapContainer: {
+        width: '90%',
+        height: 240,
+        alignSelf: "center",
+        marginBottom: 30,
+    },
+    map: {
+        width: "100%",
+        height: "100%",
+    },
+    sectionHeader: {
+        fontSize: 18,  // Increased font size
+        fontWeight: 'bold',
+        color: colors.primary,
+        padding: 12,
+        backgroundColor: colors.background,
     },
     watchlistButton: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: colors.primary,
-        paddingVertical: 12,
-        paddingHorizontal: 20,
+        paddingVertical: 6,
         borderRadius: 8,
-        elevation: 3,
+        width: "80%",
         alignSelf: "center",
-        width: "60%",
+        marginTop: 30,
     },
     watchlistButtonText: {
-        fontSize: 16,
+        fontSize: 16,  // Increased font size
         color: "white",
         fontWeight: "bold",
         marginLeft: 8,
+    },
+    formContainer: {
+        flexDirection: 'row',
+        marginTop: 4,
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        maxWidth: 100,
+    },
+    formText: {
+        fontSize: 14,  // Increased font size
+        fontWeight: 'bold',
+    },
+    recordText: {
+        fontSize: 16,  // Increased font size
+        color: colors.textSecondary,
+        marginTop: 4,
+        fontWeight: '500',
+        textAlign: 'center',
     },
 });

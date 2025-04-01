@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome for icons
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 import globalStyles from "../styles/globalStyles";
 import { colors } from "../styles/globalStyles";
 import { StyleSheet } from 'react-native';
