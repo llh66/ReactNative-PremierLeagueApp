@@ -51,7 +51,7 @@ export default function MatchDetailScreen({ route, navigation }) {
                 style={styles.backButton}
                 onPress={() => navigation.goBack()}
             >
-                <Icon name="arrow-left" size={20} color={colors.primary} />
+                <Icon style= {styles.icon} name="arrow-left" size={20} color={colors.primary} />
                 <Text style={styles.backButtonText}>Back to Matches</Text>
             </TouchableOpacity>
 
@@ -121,8 +121,8 @@ export default function MatchDetailScreen({ route, navigation }) {
                     style={styles.map}
                     initialRegion={{
                         ...stadiumCoords,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421
+                        latitudeDelta: 1,
+                        longitudeDelta: 1
                     }}
                 >
                     <Marker
@@ -134,15 +134,16 @@ export default function MatchDetailScreen({ route, navigation }) {
             </View>
 
             <TouchableOpacity style={styles.watchlistButton}>
-                <Icon name="plus" size={16} color="#FFFFFF" />
+                <Icon name="plus" size={20} color="#FFFFFF" />
                 <Text style={styles.watchlistButtonText}>Add to Watchlist</Text>
             </TouchableOpacity>
         </View>
     );
 }
+
 const styles = StyleSheet.create({
     contentPadding: {
-        paddingTop: 20,
+        paddingTop: 20, 
         paddingBottom: 20,
     },
     backButton: {
@@ -150,19 +151,24 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 15,
         paddingHorizontal: 16,
+        marginTop: 10, 
     },
     backButtonText: {
         fontSize: 20,  // Increased font size
         fontWeight: "bold",
         color: colors.primary,
         marginLeft: 8,
+        marginTop: 10,
+    },
+    icon: {
+        marginTop: 10,
     },
     header: {
         backgroundColor: colors.primary,
         paddingVertical: 15,
         paddingHorizontal: 16,
         borderRadius: 12,
-        marginBottom: 20,
+        margin: 10, 
     },
     title: {
         fontSize: 26,  // Increased font size
@@ -221,16 +227,17 @@ const styles = StyleSheet.create({
     },
     mapContainer: {
         width: '90%',
-        height: 240,
+        height: 200,
         alignSelf: "center",
         marginBottom: 30,
+        alignItems: 'center'
     },
     map: {
         width: "100%",
         height: "100%",
     },
     sectionHeader: {
-        fontSize: 18,  // Increased font size
+        fontSize: 18,  
         fontWeight: 'bold',
         color: colors.primary,
         padding: 12,
@@ -245,7 +252,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         width: "80%",
         alignSelf: "center",
-        marginTop: 30,
+        marginTop: 40,
     },
     watchlistButtonText: {
         fontSize: 16,  // Increased font size
@@ -265,7 +272,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     recordText: {
-        fontSize: 16,  // Increased font size
+        fontSize: 16,  
         color: colors.textSecondary,
         marginTop: 4,
         fontWeight: '500',
