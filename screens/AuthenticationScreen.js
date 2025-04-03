@@ -11,7 +11,7 @@ const AuthenticationScreen = ({ navigation }) => {
             {/* Header */}
             <View style={styles.header}>
                 <Text style={styles.title}>Welcome to Premier League App</Text>
-                <Text style={styles.subtitle}>Sign in or create an account to get started.</Text>
+                <Text style={styles.subtitle}>Authenticate to access more features.</Text>
             </View>
 
             {/* Buttons */}

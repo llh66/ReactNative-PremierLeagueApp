@@ -1,17 +1,14 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { PLDataProvider } from './utils/PLDataContext';
-import AppNavigator from './navigation/AppNavigator';
-import { UserAuthentication } from './config/UserAuthentication';
+import { ContextProvider } from './utils/StateContext';
+import MainTabs from './navigation/MainTabs';
 
 export default function App() {
-    const { user } = UserAuthentication(); // Use only `user`
-
     return (
-        <PLDataProvider>
+        <ContextProvider>
             <NavigationContainer>
-                <AppNavigator user={user} />
+                <MainTabs/>
             </NavigationContainer>
-        </PLDataProvider>
+        </ContextProvider>
     );
 }
