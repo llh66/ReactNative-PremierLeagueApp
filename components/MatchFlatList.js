@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import globalStyles from "../styles/globalStyles";
 import { colors } from "../styles/globalStyles";
 import { StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 const MatchFlatList = ({ navigation, data }) => {
+    const flatListRef = useRef(null);
+    const scrollToTop = () => {
+        flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+    };
     const formatMatchDate = (dateString) => {
         const date = new Date(dateString);
         const options = { 
@@ -57,11 +62,22 @@ const MatchFlatList = ({ navigation, data }) => {
     return (
         <View style={globalStyles.container}>
             <FlatList
+                ref={flatListRef}
                 data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
                 contentContainerStyle={styles.listContainer}
             />
+            <TouchableOpacity
+                onPress={scrollToTop}
+                style={styles.buttonToTop}
+            >
+                <Icon
+                    name='arrow-circle-up'
+                    color={colors.secondary}
+                    size={60}
+                />
+            </TouchableOpacity>
         </View>
     );
 }
@@ -120,6 +136,11 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: colors.textSecondary,
         textAlign: 'center',
+    },
+    buttonToTop: {
+        position: 'absolute',
+        bottom: 12,
+        right: 12
     }
 });
 
