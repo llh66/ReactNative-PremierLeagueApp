@@ -4,14 +4,15 @@ import {
   Text, 
   Image, 
   TouchableOpacity, 
-  StyleSheet 
+  StyleSheet, 
+  ScrollView
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MapView, { Marker } from "react-native-maps";
 import globalStyles from "../styles/globalStyles";
 import { colors } from "../styles/globalStyles";
 
-export default function MatchDetailScreen({ route, navigation }) {
+const MatchDetailScreen = ({ route, navigation }) => {
     const { match } = route.params;
 
     const homeCompetitor = match.competitions[0]?.competitors[0] || {};
@@ -46,13 +47,13 @@ export default function MatchDetailScreen({ route, navigation }) {
     });
 
     return (
-        <View style={[globalStyles.container, styles.contentPadding]}>
+        <ScrollView style={[globalStyles.container, styles.contentPadding]}>
             <TouchableOpacity
                 style={styles.backButton}
                 onPress={() => navigation.goBack()}
             >
                 <Icon style= {styles.icon} name="arrow-left" size={20} color={colors.primary} />
-                <Text style={styles.backButtonText}>Back to Matches</Text>
+                <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
 
             <View style={styles.header}>
@@ -132,26 +133,18 @@ export default function MatchDetailScreen({ route, navigation }) {
                     />
                 </MapView>
             </View>
-
-            <TouchableOpacity style={styles.watchlistButton}>
-                <Icon name="plus" size={20} color="#FFFFFF" />
-                <Text style={styles.watchlistButtonText}>Add to Watchlist</Text>
-            </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     contentPadding: {
-        paddingTop: 20, 
         paddingBottom: 20,
     },
     backButton: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: 15,
         paddingHorizontal: 16,
-        marginTop: 10, 
     },
     backButtonText: {
         fontSize: 20,  // Increased font size
@@ -229,7 +222,7 @@ const styles = StyleSheet.create({
         width: '90%',
         height: 200,
         alignSelf: "center",
-        marginBottom: 30,
+        marginBottom: 70,
         alignItems: 'center'
     },
     map: {
@@ -279,3 +272,4 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
+export default MatchDetailScreen;

@@ -5,8 +5,9 @@ import { FIREBASE_AUTH } from '../config/FirebaseConfig';
 import globalStyles from "../styles/globalStyles";
 import { colors } from "../styles/globalStyles";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { initializeFavoriteTeam } from '../utils/FirebaseDBHelper';
 
-export default SignUpScreen = () => {
+export default SignUpScreen = ({navigation}) => {
     const [userObject, setUserObject] = useState({
         email: '',
         password: '',
@@ -26,6 +27,7 @@ export default SignUpScreen = () => {
             await createUserWithEmailAndPassword(FIREBASE_AUTH, userObject.email, userObject.password)
                 .then((result) => {
                     console.log(result.user.email);
+                    initializeFavoriteTeam(result.user.email);
                 });
         } catch (err) {
             setUserObject({
@@ -37,6 +39,13 @@ export default SignUpScreen = () => {
 
     return (
         <View style={[globalStyles.container, styles.container]}>
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+            >
+                <Icon style= {styles.icon} name="arrow-left" size={20} color={colors.primary} />
+                <Text style={styles.backButtonText}>Back</Text>
+            </TouchableOpacity>
             {/* Header */}
             <View style={styles.header}>
                 <Text style={styles.heading}>Create Account</Text>
@@ -88,6 +97,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 20,
+    },
+    backButton: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 16,
+        position: 'absolute',
+        top: 0,
+        left: 0
+    },
+    backButtonText: {
+        fontSize: 20,  // Increased font size
+        fontWeight: "bold",
+        color: colors.primary,
+        marginLeft: 8,
+        marginTop: 10,
+    },
+    icon: {
+        marginTop: 10,
     },
     header: {
         marginBottom: 40,

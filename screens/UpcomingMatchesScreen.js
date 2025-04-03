@@ -1,73 +1,22 @@
 import React, { useContext } from 'react';
 import { View, FlatList, Text, Image, TouchableOpacity } from 'react-native';
-import { PLDataContext } from '../utils/PLDataContext';
 import globalStyles from "../styles/globalStyles";
 import { colors } from "../styles/globalStyles";
 import { StyleSheet } from 'react-native';
+import { StateContext } from '../utils/StateContext';
+import MatchFlatList from '../components/MatchFlatList';
 
 
-export default function UpcomingMatchesScreen({ navigation }) {
-    const { PLData } = useContext(PLDataContext);
+const UpcomingMatchesScreen = ({ navigation }) => {
+    const { scoreboard } = useContext(StateContext);
 
-    const matches = PLData?.data?.events || [];
-
-    const formatMatchDate = (dateString) => {
-        const date = new Date(dateString);
-        const options = { 
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric',
-            hour: '2-digit', 
-            minute: '2-digit'
-        };
-        return date.toLocaleDateString('en-US', options);
-    };
-
-    const renderItem = ({ item }) => {
-        const homeTeam = item.competitions[0]?.competitors[0]?.team;
-        const awayTeam = item.competitions[0]?.competitors[1]?.team;
-        const matchDate = formatMatchDate(item.date);
-
-        return (
-            <TouchableOpacity
-                style={styles.matchCard}
-                onPress={() => navigation.navigate('MatchDetail', { match: item })}
-            >
-                <View style={styles.dateStrip}>
-                    <Text style={styles.dateText}>{matchDate}</Text>
-                </View>
-                
-                <View style={styles.teamsContainer}>
-                    <View style={styles.teamColumn}>
-                        <Image source={{ uri: homeTeam.logo }} style={styles.logo} />
-                        <Text style={styles.teamName}>{homeTeam.displayName}</Text>
-                    </View>
-                    
-                    <View style={styles.vsContainer}>
-                        <Text style={styles.vsText}>VS</Text>
-                        <Text style={styles.venueText}>
-                            {item.competitions[0]?.venue?.fullName || ""}
-                        </Text>
-                    </View>
-                    
-                    <View style={styles.teamColumn}>
-                        <Image source={{ uri: awayTeam.logo }} style={styles.logo} />
-                        <Text style={styles.teamName}>{awayTeam.displayName}</Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        );
-    };
+    const matches = scoreboard?.data?.events || [];
 
     return (
-        <View style={globalStyles.container}>
-            <FlatList
-                data={matches}
-                keyExtractor={(item) => item.id}
-                renderItem={renderItem}
-                contentContainerStyle={styles.listContainer}
-            />
-        </View>
+        <MatchFlatList
+            data={matches}
+            navigation={navigation}
+        />
     );
 }
 const styles = StyleSheet.create({
@@ -127,3 +76,4 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     }
 });
+export default UpcomingMatchesScreen;
