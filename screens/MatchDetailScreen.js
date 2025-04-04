@@ -5,12 +5,14 @@ import {
   Image, 
   TouchableOpacity, 
   StyleSheet, 
-  ScrollView
+  ScrollView, 
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MapView, { Marker } from "react-native-maps";
 import globalStyles from "../styles/globalStyles";
 import { colors } from "../styles/globalStyles";
+import { useEffect, useState } from "react";
+import { getStadiumCoordinates } from "../utils/LocationHelper";
 
 const MatchDetailScreen = ({ route, navigation }) => {
     const { match } = route.params;
@@ -29,10 +31,23 @@ const MatchDetailScreen = ({ route, navigation }) => {
 
     const venue = match.competitions[0]?.venue || {};
     
-    const stadiumCoords = {
-        latitude: venue?.coordinates?.latitude || 52.939899,
-        longitude: venue?.coordinates?.longitude || -1.13258
-    };
+    const [stadiumCoords, setStadiumCoords] = useState(null);
+
+    useEffect(() => {
+        const fetchCoords = async () => {
+          const result = await getStadiumCoordinates(venue);
+          if (result) {
+            setStadiumCoords(result);
+          } else {
+            setStadiumCoords({
+              latitude: 52.939899,
+              longitude: -1.13258,
+            });
+          }
+        };
+        fetchCoords();
+      }, []);
+      
 
     const matchDate = new Date(match.date);
     const formattedDate = matchDate.toLocaleDateString("en-US", {
@@ -117,22 +132,25 @@ const MatchDetailScreen = ({ route, navigation }) => {
             </View>
 
             <View style={styles.mapContainer}>
-                <Text style={styles.sectionHeader}>Stadium Location</Text>
-                <MapView
-                    style={styles.map}
-                    initialRegion={{
-                        ...stadiumCoords,
-                        latitudeDelta: 1,
-                        longitudeDelta: 1
-                    }}
-                >
-                    <Marker
-                        coordinate={stadiumCoords}
-                        title={venue.fullName}
-                        description={venue.address?.city}
-                    />
-                </MapView>
-            </View>
+  <Text style={styles.sectionHeader}>Stadium Location</Text>
+  {stadiumCoords && (
+    <MapView
+      style={styles.map}
+      initialRegion={{
+        ...stadiumCoords,
+        latitudeDelta: 1,
+        longitudeDelta: 1,
+      }}
+    >
+      <Marker
+        coordinate={stadiumCoords}
+        title={venue.fullName}
+        description={venue.address?.city}
+      />
+    </MapView>
+  )}
+</View>
+
         </ScrollView>
     );
 }

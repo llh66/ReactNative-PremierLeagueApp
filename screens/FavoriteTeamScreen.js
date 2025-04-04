@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import MatchFlatList from '../components/MatchFlatList';
 import { StateContext } from '../utils/StateContext';
 
+
 const FavoriteTeamScreen = ({navigation}) => {
     const { scoreboard, favoriteTeam } = useContext(StateContext);
 

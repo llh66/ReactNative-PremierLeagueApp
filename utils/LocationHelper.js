@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 
 export const getStadiumCoordinates = async (venue) => {
     try {
+        
         // Validate venue data
         if (!venue?.address?.city || !venue.fullName) {
         Alert.alert('Location Error', 'Incomplete venue information');
@@ -24,8 +25,6 @@ export const getStadiumCoordinates = async (venue) => {
         return geoResult[0] ? {
         latitude: geoResult[0].latitude,
         longitude: geoResult[0].longitude,
-        latitudeDelta: 0.02,
-        longitudeDelta: 0.02
         } : null;
 
     } catch (error) {
